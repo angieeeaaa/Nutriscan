@@ -1,38 +1,197 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  background-color: #1D9E75;
+  background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.floating-veggies {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floating-veggies span {
+  position: absolute;
+  font-size: 32px;
+  opacity: 0.2;
+}
+
+.app-wrap {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 14px;
+  border: 1.5px solid #e8f5f0;
+  border-radius: 10px;
+  outline: none;
+  background: #f8fdfb;
+  color: #1a1a1a;
+  transition: all 0.2s;
+}
+
+.field input:focus {
+  border-color: #1D9E75;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(29,158,117,0.08);
+}
+
+.field input::placeholder {
+  color: #bbb;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: #1D9E75;
   color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: all 0.2s;
 }
 
-.App-link {
-  color: #61dafb;
+.btn-primary:hover {
+  background: #0F6E56;
+  transform: translateY(-1px);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.btn-primary:active {
+  transform: translateY(0px);
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  color: #999;
+  border: 1.5px solid #e8f5f0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #f8fdfb;
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+.error {
+  font-size: 13px;
+  color: #e53e3e;
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 1rem;
+}
+
+.switch {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 13px;
+  color: #999;
+}
+
+.link {
+  color: #1D9E75;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.chips-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 1rem 0 1.25rem;
+}
+
+.chip {
+  padding: 10px 12px;
+  border: 1.5px solid #e8f5f0;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  background: #f8fdfb;
+}
+
+.chip:hover {
+  border-color: #1D9E75;
+  color: #1D9E75;
+  background: #f0faf6;
+}
+
+.chip.selected {
+  background: #e6f7f1;
+  border-color: #1D9E75;
+  color: #0F6E56;
+  font-weight: 600;
 }
