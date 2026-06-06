@@ -195,3 +195,73 @@ h2 {
   color: #0F6E56;
   font-weight: 600;
 }
+
+.conditions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 1rem 0 1.25rem;
+}
+
+.condition-chip {
+  padding: 10px 12px;
+  border: 1.5px solid #e8f5f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #f8fdfb;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.condition-chip:hover {
+  border-color: #1D9E75;
+  background: #f0faf6;
+}
+
+.condition-chip.selected {
+  background: #e6f7f1;
+  border-color: #1D9E75;
+}
+
+.condition-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.condition-chip.selected .condition-label {
+  color: #0F6E56;
+}
+
+.condition-desc {
+  font-size: 11px;
+  color: #999;
+}
+
+.condition-chip.selected .condition-desc {
+  color: #1D9E75;
+}
+
+.profile-summary {
+  background: #f8fdfb;
+  border: 1.5px solid #e8f5f0;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1D9E75;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.no-prefs {
+  font-size: 13px;
+  color: #999;
+}

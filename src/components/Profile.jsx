@@ -13,7 +13,7 @@ function Profile({ setScreen, user }) {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5001/api/user/profile', {
+      const res = await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -1,0 +1,46 @@
+import React from 'react';
+
+const conditionLabels = {
+  diabetes: 'Diabetes',
+  hypertension: 'Hypertension',
+  high_cholesterol: 'High Cholesterol',
+  kidney_disease: 'Kidney Disease',
+  vegetarian: 'Vegetarian',
+  vegan: 'Vegan',
+  halal: 'Halal',
+  gluten_free: 'Gluten-free',
+  nuts: 'Tree Nuts',
+  shellfish: 'Shellfish',
+  dairy: 'Dairy',
+  eggs: 'Eggs',
+};
+
+function Dashboard({ user, preferences, setScreen }) {
+  return (
+    <div className="card">
+      <h2>Welcome, {user?.name}! 👋</h2>
+      <p className="subtitle">Here's your health profile summary</p>
+
+      <div className="profile-summary">
+        <p className="section-label">Your selected conditions & preferences</p>
+        {preferences && preferences.length > 0 ? (
+          <div className="chips-grid">
+            {preferences.map(pref => (
+              <div key={pref} className="chip selected">
+                {conditionLabels[pref] || pref}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="no-prefs">No conditions selected.</p>
+        )}
+      </div>
+
+      <button className="btn-primary" onClick={() => setScreen('profile')}>
+        ✏️ Edit Profile
+      </button>
+    </div>
+  );
+}
+
+export default Dashboard;

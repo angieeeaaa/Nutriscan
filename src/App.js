@@ -3,21 +3,35 @@ import './App.css';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [screen, setScreen] = useState('login');
   const [user, setUser] = useState(null);
+  const [preferences, setPreferences] = useState([]);
 
   return (
     <div className="app-wrap">
-      {screen === 'login' && <Login setScreen={setScreen} setUser={setUser} />}
-      {screen === 'signup' && <Signup setScreen={setScreen} setUser={setUser} />}
-      {screen === 'profile' && <Profile setScreen={setScreen} user={user} />}
+      {screen === 'login' && (
+        <Login setScreen={setScreen} setUser={setUser} />
+      )}
+      {screen === 'signup' && (
+        <Signup setScreen={setScreen} setUser={setUser} />
+      )}
+      {screen === 'profile' && (
+        <Profile
+          setScreen={setScreen}
+          user={user}
+          preferences={preferences}
+          setPreferences={setPreferences}
+        />
+      )}
       {screen === 'dashboard' && (
-        <div className="card">
-          <h2>Welcome{user ? `, ${user.name}` : ''}! 👋</h2>
-          <p className="subtitle">Your profile is all set. Dashboard coming soon!</p>
-        </div>
+        <Dashboard
+          user={user}
+          preferences={preferences}
+          setScreen={setScreen}
+        />
       )}
     </div>
   );
