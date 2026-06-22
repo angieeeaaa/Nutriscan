@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function Profile({ setScreen, user }) {
+function Profile({ setScreen, user, setPreferences }) {
   const [selected, setSelected] = useState([]);
   const [error, setError] = useState('');
 
@@ -42,6 +42,7 @@ function Profile({ setScreen, user }) {
         setError(data.error);
         return;
       }
+      setPreferences(selected);
       setScreen('dashboard');
     } catch (err) {
       setError('Could not connect to server.');
