@@ -21,13 +21,17 @@ function Dashboard({ user, preferences, setScreen }) {
       <h2>Welcome, {user?.name}! 👋</h2>
       <p className="subtitle">Here's your health profile summary</p>
 
+      <button className="btn-primary" onClick={() => setScreen('search')}>
+        🔍 Search or Scan a Product
+      </button>
+
       <div className="profile-summary">
         <p className="section-label">Your selected conditions & preferences</p>
         {preferences && preferences.length > 0 ? (
           <div className="chips-grid">
             {preferences.map(pref => (
               <div key={pref} className="chip selected">
-                {conditionLabels[pref] || pref}
+                <span className="chip-label">{conditionLabels[pref] || pref}</span>
               </div>
             ))}
           </div>
@@ -36,7 +40,7 @@ function Dashboard({ user, preferences, setScreen }) {
         )}
       </div>
 
-      <button className="btn-primary" onClick={() => setScreen('profile')}>
+      <button className="btn-secondary" onClick={() => setScreen('profile')}>
         ✏️ Edit Profile
       </button>
     </div>
