@@ -30,7 +30,7 @@ function Scanner({ onScan, onClose }) {
         isRunning.current = false;
       }
     };
-  }, []);
+  }, [onScan]);
 
   return (
     <div className="scanner-wrap">
