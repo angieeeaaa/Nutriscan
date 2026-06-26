@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Design from './components/Design';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
@@ -8,7 +9,7 @@ import Search from './components/Search';
 import Result from './components/Result';
 
 function App() {
-  const [screen, setScreen] = useState('login');
+  const [screen, setScreen] = useState('landing');
   const [user, setUser] = useState(null);
   const [preferences, setPreferences] = useState([]);
   const [product, setProduct] = useState(null);
@@ -33,7 +34,8 @@ function App() {
   };
 
   return (
-    <div className="app-wrap">
+    <div className={screen === 'landing' ? '' : 'app-wrap'}>
+      {screen === 'landing' && <Design setScreen={setScreen} user={user} preferences={preferences} />}
       {screen === 'login' && <Login setScreen={setScreen} setUser={handleSetUser} />}
       {screen === 'signup' && <Signup setScreen={setScreen} setUser={handleSetUser} />}
       {screen === 'profile' && <Profile setScreen={setScreen} user={user} setPreferences={setPreferences} />}
