@@ -58,77 +58,73 @@ function Search({ setScreen, setProduct }) {
   };
 
   return (
-    <div className="card">
-      <h2>Find a product</h2>
-      <p className="subtitle">Search by name or scan a barcode</p>
-
-      <div className="tab-row">
-        <button
-          className={`tab-btn ${tab === 'search' ? 'active' : ''}`}
-          onClick={() => { setTab('search'); setScanning(false); }}
-        >
-          🔍 Search
-        </button>
-        <button
-          className={`tab-btn ${tab === 'scan' ? 'active' : ''}`}
-          onClick={() => setTab('scan')}
-        >
-          📷 Scan
-        </button>
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button className="btn-link-back" onClick={() => setScreen('dashboard')}>← Back to dashboard</button>
       </div>
+      <div className="card">
+        <h2>Find a product</h2>
+        <p className="subtitle">Search by name or scan a barcode</p>
 
-      {tab === 'search' && (
-        <div>
-          <div className="search-row">
-            <input
-              type="text"
-              placeholder="e.g. Milo, Pocky, Kit Kat..."
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSearch()}
-              className="search-input"
-            />
-            <button className="search-btn" onClick={handleSearch}>Go</button>
-          </div>
-          {loading && <p className="loading">Searching...</p>}
-          {error && <p className="error">{error}</p>}
-          <div className="results-list">
-            {results.map((product, idx) => (
-              <div key={idx} className="result-item" onClick={() => handleSelect(product)}>
-                {product.image_small_url && (
-                  <img src={product.image_small_url} alt={product.product_name} className="result-img" />
-                )}
-                <div className="result-info">
-                  <p className="result-name">{product.product_name || 'Unknown product'}</p>
-                  <p className="result-brand">{product.brands || ''}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="tab-row">
+          <button className={`tab-btn ${tab === 'search' ? 'active' : ''}`} onClick={() => { setTab('search'); setScanning(false); }}>🔍 Search</button>
+          <button className={`tab-btn ${tab === 'scan' ? 'active' : ''}`} onClick={() => setTab('scan')}>📷 Scan</button>
         </div>
-      )}
 
-      {tab === 'scan' && (
-        <div>
-          {!scanning ? (
-            <div className="scan-placeholder">
-              <p style={{ fontSize: '48px', marginBottom: '1rem' }}>📷</p>
-              <p style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Scan a barcode</p>
-              <p className="subtitle">Point your camera at any food product barcode</p>
-              <button className="btn-primary" onClick={() => setScanning(true)}>
-                Start Camera
-              </button>
-              {error && <p className="error" style={{ marginTop: '1rem' }}>{error}</p>}
+        {tab === 'search' && (
+          <div>
+            <div className="search-row">
+              <input
+                type="text"
+                placeholder="e.g. Milo, Pocky, Kit Kat..."
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                className="search-input"
+              />
+              <button className="search-btn" onClick={handleSearch}>Go</button>
             </div>
-          ) : (
-            <Scanner onScan={handleBarcodeScan} onClose={() => setScanning(false)} />
-          )}
-        </div>
-      )}
+            {loading && <p className="loading">Searching...</p>}
+            {error && <p className="error">{error}</p>}
+            <div className="results-list">
+              {results.map((product, idx) => (
+                <div key={idx} className="result-item" onClick={() => handleSelect(product)}>
+                  {product.image_small_url && (
+                    <img src={product.image_small_url} alt={product.product_name} className="result-img" />
+                  )}
+                  <div className="result-info">
+                    <p className="result-name">{product.product_name || 'Unknown product'}</p>
+                    <p className="result-brand">{product.brands || ''}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-      <button className="btn-secondary" onClick={() => setScreen('dashboard')}>
-        Back to dashboard
-      </button>
+        {tab === 'scan' && (
+          <div>
+            {!scanning ? (
+              <div className="scan-placeholder">
+                <p style={{ fontSize: '48px', marginBottom: '1rem' }}>📷</p>
+                <p style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Scan a barcode</p>
+                <p className="subtitle">Point your camera at any food product barcode</p>
+                <button className="btn-primary" onClick={() => setScanning(true)}>Start Camera</button>
+                <div style={{ marginTop: '1rem' }}>
+                  <p className="subtitle">Or enter barcode manually:</p>
+                  <div className="search-row">
+                    <input type="text" placeholder="e.g. 5449000000996" className="search-input" onKeyDown={e => e.key === 'Enter' && handleBarcodeScan(e.target.value)} />
+                    <button className="search-btn" onClick={e => handleBarcodeScan(e.target.previousSibling.value)}>Go</button>
+                  </div>
+                </div>
+                {error && <p className="error" style={{ marginTop: '1rem' }}>{error}</p>}
+              </div>
+            ) : (
+              <Scanner onScan={handleBarcodeScan} onClose={() => setScanning(false)} />
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

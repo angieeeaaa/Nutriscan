@@ -35,24 +35,29 @@ function Signup({ setScreen, setUser }) {
   };
 
   return (
-    <div className="card">
-      <h2>Create account</h2>
-      <p className="subtitle">Start scanning smarter</p>
-      {error && <p className="error">{error}</p>}
-      <div className="field">
-        <label>Full name</label>
-        <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Jane Tan" />
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button className="btn-link-back" onClick={() => setScreen('landing')}>← Back to home</button>
       </div>
-      <div className="field">
-        <label>Email</label>
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+      <div className="card">
+        <h2>Create account</h2>
+        <p className="subtitle">Start scanning smarter</p>
+        {error && <p className="error">{error}</p>}
+        <div className="field">
+          <label>Full name</label>
+          <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Jane Tan" />
+        </div>
+        <div className="field">
+          <label>Email</label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+        </div>
+        <div className="field">
+          <label>Password</label>
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min. 8 characters" />
+        </div>
+        <button className="btn-primary" onClick={handleSignup}>Continue</button>
+        <p className="switch">Have an account? <span className="link" onClick={() => setScreen('login')}>Log in</span></p>
       </div>
-      <div className="field">
-        <label>Password</label>
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min. 8 characters" />
-      </div>
-      <button className="btn-primary" onClick={handleSignup}>Continue</button>
-      <p className="switch">Have an account? <span className="link" onClick={() => setScreen('login')}>Log in</span></p>
     </div>
   );
 }

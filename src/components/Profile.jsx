@@ -50,7 +50,7 @@ function Profile({ setScreen, user, setPreferences }) {
   };
 
   const options = [
-    { label: 'Diabetes', val: 'diabetes', desc: "We'll flag high sugar & carbs content" },
+    { label: 'Diabetes', val: 'diabetes', desc: "We'll flag high sugar content" },
     { label: 'Hypertension', val: 'hypertension', desc: "We'll flag high sodium content" },
     { label: 'High cholesterol', val: 'high_cholesterol', desc: "We'll flag high saturated fat" },
     { label: 'Kidney disease', val: 'kidney_disease', desc: "We'll flag high potassium & phosphorus" },
@@ -65,24 +65,29 @@ function Profile({ setScreen, user, setPreferences }) {
   ];
 
   return (
-    <div className="card">
-      <h2>Your health profile</h2>
-      <p className="subtitle">Select all that apply</p>
-      {error && <p className="error">{error}</p>}
-      <div className="chips-grid">
-        {options.map(opt => (
-          <div
-            key={opt.val}
-            className={`chip ${selected.includes(opt.val) ? 'selected' : ''}`}
-            onClick={() => toggle(opt.val)}
-          >
-            <span className="chip-label">{opt.label}</span>
-            <span className="chip-desc">{opt.desc}</span>
-          </div>
-        ))}
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button className="btn-link-back" onClick={() => setScreen('dashboard')}>← Back to dashboard</button>
       </div>
-      <button className="btn-primary" onClick={handleSave}>Save and continue</button>
-      <button className="btn-secondary" onClick={() => setScreen('login')}>Back</button>
+      <div className="card">
+        <h2>Your health profile</h2>
+        <p className="subtitle">Select all that apply</p>
+        {error && <p className="error">{error}</p>}
+        <div className="chips-grid">
+          {options.map(opt => (
+            <div
+              key={opt.val}
+              className={`chip ${selected.includes(opt.val) ? 'selected' : ''}`}
+              onClick={() => toggle(opt.val)}
+            >
+              <span className="chip-label">{opt.label}</span>
+              <span className="chip-desc">{opt.desc}</span>
+            </div>
+          ))}
+        </div>
+        <button className="btn-primary" onClick={handleSave}>Save and continue</button>
+        <button className="btn-secondary" onClick={() => setScreen('dashboard')}>Back</button>
+      </div>
     </div>
   );
 }

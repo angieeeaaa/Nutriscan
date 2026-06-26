@@ -118,70 +118,72 @@ function Result({ product, preferences, setScreen }) {
   if (!product) return null;
 
   return (
-    <div className="card">
-      <button className="back-link" onClick={() => setScreen('search')}>← Back to search</button>
-
-      {image && <img src={image} alt={name} className="product-img" />}
-
-      <h2>{name}</h2>
-      {brand && <p className="result-brand" style={{ marginBottom: '1rem' }}>{brand}</p>}
-
-      <div className="verdict-box" style={{ background: vc.bg, borderColor: vc.color }}>
-        <p className="verdict-label" style={{ color: vc.color }}>{vc.label}</p>
-        {flags.length > 0 && (
-          <ul className="flag-list">
-            {flags.map(f => (
-              <li key={f} style={{ color: vc.color }}>
-                <strong>{rules[f].label}:</strong> {rules[f].reason}
-              </li>
-            ))}
-          </ul>
-        )}
+    <div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button className="btn-link-back" onClick={() => setScreen('search')}>← Back to search</button>
       </div>
+      <div className="card">
+        {image && <img src={image} alt={name} className="product-img" />}
+        <h2>{name}</h2>
+        {brand && <p className="result-brand" style={{ marginBottom: '1rem' }}>{brand}</p>}
 
-      {verdict !== 'suitable' && (
-        <div className="alternatives-section">
-          <p className="section-label">Better alternatives</p>
-          {loadingAlts && <p className="alt-loading">Looking for alternatives...</p>}
-          {!loadingAlts && alternatives.length === 0 && (
-            <p className="alt-empty">No suitable alternatives found in this category.</p>
-          )}
-          {!loadingAlts && alternatives.length > 0 && (
-            <ul className="alt-list">
-              {alternatives.map(alt => (
-                <li key={alt.code} className="alt-item">
-                  {alt.name}
+        <div className="verdict-box" style={{ background: vc.bg, borderColor: vc.color }}>
+          <p className="verdict-label" style={{ color: vc.color }}>{vc.label}</p>
+          {flags.length > 0 && (
+            <ul className="flag-list">
+              {flags.map(f => (
+                <li key={f} style={{ color: vc.color }}>
+                  <strong>{rules[f].label}:</strong> {rules[f].reason}
                 </li>
               ))}
             </ul>
           )}
         </div>
-      )}
 
-      <div className="nutrition-section">
-        <p className="section-label">Nutrition per 100g</p>
-        <div className="nutrition-grid">
-          {[
-            { label: 'Calories', val: nutrients['energy-kcal_100g'], unit: 'kcal' },
-            { label: 'Carbs', val: nutrients['carbohydrates_100g'], unit: 'g' },
-            { label: 'Sugar', val: nutrients['sugars_100g'], unit: 'g' },
-            { label: 'Fat', val: nutrients['fat_100g'], unit: 'g' },
-            { label: 'Saturated Fat', val: nutrients['saturated-fat_100g'], unit: 'g' },
-            { label: 'Protein', val: nutrients['proteins_100g'], unit: 'g' },
-            { label: 'Salt', val: nutrients['salt_100g'], unit: 'g' },
-            { label: 'Sodium', val: nutrients['sodium_100g'], unit: 'g' },
-          ].map(n => (
-            <div key={n.label} className="nutrition-item">
-              <p className="nutrition-val">{n.val != null ? `${n.val}${n.unit}` : 'N/A'}</p>
-              <p className="nutrition-label">{n.label}</p>
-            </div>
-          ))}
+        {verdict !== 'suitable' && (
+          <div className="alternatives-section">
+            <p className="section-label">Better alternatives</p>
+            {loadingAlts && <p className="alt-loading">Looking for alternatives...</p>}
+            {!loadingAlts && alternatives.length === 0 && (
+              <p className="alt-empty">No suitable alternatives found in this category.</p>
+            )}
+            {!loadingAlts && alternatives.length > 0 && (
+              <ul className="alt-list">
+                {alternatives.map(alt => (
+                  <li key={alt.code} className="alt-item">
+                    {alt.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        <div className="nutrition-section">
+          <p className="section-label">Nutrition per 100g</p>
+          <div className="nutrition-grid">
+            {[
+              { label: 'Calories', val: nutrients['energy-kcal_100g'], unit: 'kcal' },
+              { label: 'Carbs', val: nutrients['carbohydrates_100g'], unit: 'g' },
+              { label: 'Sugar', val: nutrients['sugars_100g'], unit: 'g' },
+              { label: 'Fat', val: nutrients['fat_100g'], unit: 'g' },
+              { label: 'Saturated Fat', val: nutrients['saturated-fat_100g'], unit: 'g' },
+              { label: 'Protein', val: nutrients['proteins_100g'], unit: 'g' },
+              { label: 'Salt', val: nutrients['salt_100g'], unit: 'g' },
+              { label: 'Sodium', val: nutrients['sodium_100g'], unit: 'g' },
+            ].map(n => (
+              <div key={n.label} className="nutrition-item">
+                <p className="nutrition-val">{n.val != null ? `${n.val}${n.unit}` : 'N/A'}</p>
+                <p className="nutrition-label">{n.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="ingredients-section">
-        <p className="section-label">Ingredients</p>
-        <p className="ingredients-text">{ingredients}</p>
+        <div className="ingredients-section">
+          <p className="section-label">Ingredients</p>
+          <p className="ingredients-text">{ingredients}</p>
+        </div>
       </div>
     </div>
   );
