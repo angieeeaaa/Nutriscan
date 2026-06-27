@@ -1,6 +1,73 @@
 import React, { useState } from 'react';
 import Scanner from './Scanner';
 
+const FALLBACK_PRODUCTS = [
+  {
+    barcode: '8888020007773',
+    product_name: 'Milo',
+    brands: 'Nestlé',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 366, 'sugars_100g': 46, 'fat_100g': 3.5, 'saturated-fat_100g': 1.8, 'proteins_100g': 8.6, 'salt_100g': 0.4, 'sodium_100g': 0.16, 'carbohydrates_100g': 73 },
+    ingredients_text: 'Malt extract, sugar, skimmed milk powder, cocoa powder, vitamins and minerals'
+  },
+  {
+    barcode: '4902525025204',
+    product_name: 'Yakult',
+    brands: 'Yakult',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 71, 'sugars_100g': 14.1, 'fat_100g': 0, 'saturated-fat_100g': 0, 'proteins_100g': 1.2, 'salt_100g': 0.05, 'sodium_100g': 0.02, 'carbohydrates_100g': 16 },
+    ingredients_text: 'Water, sugar, skimmed milk powder, glucose, live Lactobacillus casei Shirota cultures'
+  },
+  {
+    barcode: '5000112637939',
+    product_name: 'Maggi Instant Noodles Chicken',
+    brands: 'Maggi',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 436, 'sugars_100g': 2.1, 'fat_100g': 16.8, 'saturated-fat_100g': 7.8, 'proteins_100g': 9.3, 'salt_100g': 4.1, 'sodium_100g': 1.6, 'carbohydrates_100g': 62 },
+    ingredients_text: 'Wheat flour, palm oil, salt, sugar, monosodium glutamate, chicken flavour, soy sauce powder'
+  },
+  {
+    barcode: '4901005502008',
+    product_name: 'Pocky Chocolate',
+    brands: 'Glico',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 476, 'sugars_100g': 38, 'fat_100g': 19, 'saturated-fat_100g': 9, 'proteins_100g': 7.4, 'salt_100g': 0.6, 'sodium_100g': 0.24, 'carbohydrates_100g': 65 },
+    ingredients_text: 'Wheat flour, sugar, vegetable fat, cocoa powder, milk powder, eggs, salt, lecithin'
+  },
+  {
+    barcode: '5000171036038',
+    product_name: 'Ribena Blackcurrant',
+    brands: 'Ribena',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 43, 'sugars_100g': 10, 'fat_100g': 0, 'saturated-fat_100g': 0, 'proteins_100g': 0.1, 'salt_100g': 0.02, 'sodium_100g': 0.008, 'carbohydrates_100g': 10.5 },
+    ingredients_text: 'Water, blackcurrant juice, sugar, citric acid, vitamin C, natural flavouring'
+  },
+  {
+    barcode: '7613035980693',
+    product_name: 'Kit Kat Original',
+    brands: 'Nestlé',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 515, 'sugars_100g': 51, 'fat_100g': 27, 'saturated-fat_100g': 16, 'proteins_100g': 6.3, 'salt_100g': 0.2, 'sodium_100g': 0.08, 'carbohydrates_100g': 63 },
+    ingredients_text: 'Sugar, wheat flour, cocoa butter, skimmed milk powder, cocoa mass, palm oil, whey powder, lactose, milk fat, lecithin, vanillin'
+  },
+  {
+    barcode: '8888000762001',
+    product_name: '100 Plus Original',
+    brands: 'F&N',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 26, 'sugars_100g': 6.3, 'fat_100g': 0, 'saturated-fat_100g': 0, 'proteins_100g': 0, 'salt_100g': 0.1, 'sodium_100g': 0.04, 'carbohydrates_100g': 6.5 },
+    ingredients_text: 'Carbonated water, sugar, citric acid, sodium citrate, potassium chloride, sodium chloride, magnesium sulphate'
+  },
+  {
+    barcode: '4902777022819',
+    product_name: 'Meiji Milk Chocolate',
+    brands: 'Meiji',
+    image_small_url: '',
+    nutriments: { 'energy-kcal_100g': 556, 'sugars_100g': 52, 'fat_100g': 33, 'saturated-fat_100g': 19, 'proteins_100g': 7, 'salt_100g': 0.2, 'sodium_100g': 0.08, 'carbohydrates_100g': 57 },
+    ingredients_text: 'Sugar, whole milk powder, cocoa butter, cocoa mass, lactose, whey powder, lecithin, vanillin'
+  },
+];
+
 function Search({ setScreen, setProduct }) {
   const [tab, setTab] = useState('search');
   const [query, setQuery] = useState('');
@@ -16,16 +83,26 @@ function Search({ setScreen, setProduct }) {
     setResults([]);
     try {
       const res = await fetch(
-        `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10`
+        `https://nutriscan-backend-zrv3.onrender.com/api/food/search?query=${encodeURIComponent(query)}`
       );
       const data = await res.json();
       if (data.products && data.products.length > 0) {
         setResults(data.products);
       } else {
-        setError('No products found. Try a different search term.');
+        throw new Error('No products');
       }
     } catch (err) {
-      setError('Could not fetch products. Check your connection.');
+      const q = query.toLowerCase();
+      const matches = FALLBACK_PRODUCTS.filter(p =>
+        p.product_name.toLowerCase().includes(q) ||
+        p.brands.toLowerCase().includes(q)
+      );
+      if (matches.length > 0) {
+        setResults(matches);
+        setError('Showing offline results — live database temporarily unavailable.');
+      } else {
+        setError('No products found. Try: Milo, Yakult, Maggi, Pocky, Ribena, Kit Kat, 100 Plus, Meiji');
+      }
     }
     setLoading(false);
   };
@@ -36,18 +113,24 @@ function Search({ setScreen, setProduct }) {
     setError('');
     try {
       const res = await fetch(
-        `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`
+        `https://nutriscan-backend-zrv3.onrender.com/api/food/barcode/${barcode}`
       );
       const data = await res.json();
       if (data.status === 1 && data.product) {
         setProduct(data.product);
         setScreen('result');
       } else {
-        setError('Product not found in database. Try searching by name.');
-        setTab('search');
+        throw new Error('Not found');
       }
     } catch (err) {
-      setError('Could not fetch product. Check your connection.');
+      const match = FALLBACK_PRODUCTS.find(p => p.barcode === barcode);
+      if (match) {
+        setProduct(match);
+        setScreen('result');
+      } else {
+        setError('Product not found. Try searching by name instead.');
+        setTab('search');
+      }
     }
     setLoading(false);
   };
@@ -76,7 +159,7 @@ function Search({ setScreen, setProduct }) {
             <div className="search-row">
               <input
                 type="text"
-                placeholder="e.g. Milo, Pocky, Kit Kat..."
+                placeholder="e.g. Milo, Yakult, Kit Kat..."
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSearch()}
@@ -113,7 +196,7 @@ function Search({ setScreen, setProduct }) {
                 <div style={{ marginTop: '1rem' }}>
                   <p className="subtitle">Or enter barcode manually:</p>
                   <div className="search-row">
-                    <input type="text" placeholder="e.g. 5449000000996" className="search-input" onKeyDown={e => e.key === 'Enter' && handleBarcodeScan(e.target.value)} />
+                    <input type="text" placeholder="e.g. 8888020007773" className="search-input" onKeyDown={e => e.key === 'Enter' && handleBarcodeScan(e.target.value)} />
                     <button className="search-btn" onClick={e => handleBarcodeScan(e.target.previousSibling.value)}>Go</button>
                   </div>
                 </div>
