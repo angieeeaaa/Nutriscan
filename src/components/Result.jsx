@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Result({ product, preferences, setScreen }) {
-  if (!product) return null;
+  const [alternatives, setAlternatives] = useState([]);
+  const [loadingAlts, setLoadingAlts] = useState(false);
 
-  const nutrients = product.nutriments || {};
-  const ingredients = product.ingredients_text || 'No ingredient information available.';
-  const name = product.product_name || 'Unknown product';
-  const brand = product.brands || '';
-  const image = product.image_url || null;
+  const nutrients = product?.nutriments || {};
+  const ingredients = product?.ingredients_text || 'No ingredient information available.';
+  const name = product?.product_name || 'Unknown product';
+  const brand = product?.brands || '';
+  const image = product?.image_url || null;
 
   const rules = {
     diabetes: {
@@ -83,6 +84,39 @@ function Result({ product, preferences, setScreen }) {
 
   const vc = verdictConfig[verdict];
 
+  useEffect(() => {
+    if (!product || verdict === 'suitable') {
+      setAlternatives([]);
+      return;
+    }
+
+    const fetchAlternatives = async () => {
+      setLoadingAlts(true);
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('https://nutriscan-backend-zrv3.onrender.com/api/alternatives', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ product })
+        });
+        const data = await res.json();
+        setAlternatives(data.alternatives || []);
+      } catch (err) {
+        console.log('Could not load alternatives');
+        setAlternatives([]);
+      } finally {
+        setLoadingAlts(false);
+      }
+    };
+
+    fetchAlternatives();
+  }, [product, verdict]);
+
+  if (!product) return null;
+
   return (
     <div>
       <div style={{ marginBottom: '1rem' }}>
@@ -105,6 +139,25 @@ function Result({ product, preferences, setScreen }) {
             </ul>
           )}
         </div>
+
+        {verdict !== 'suitable' && (
+          <div className="alternatives-section">
+            <p className="section-label">Better alternatives</p>
+            {loadingAlts && <p className="alt-loading">Looking for alternatives...</p>}
+            {!loadingAlts && alternatives.length === 0 && (
+              <p className="alt-empty">No suitable alternatives found in this category.</p>
+            )}
+            {!loadingAlts && alternatives.length > 0 && (
+              <ul className="alt-list">
+                {alternatives.map(alt => (
+                  <li key={alt.code} className="alt-item">
+                    {alt.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <div className="nutrition-section">
           <p className="section-label">Nutrition per 100g</p>
