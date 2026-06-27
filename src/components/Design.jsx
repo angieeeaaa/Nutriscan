@@ -115,7 +115,7 @@ function Design({ setScreen, user, preferences }) {
       </div>
 
       <div style={{ padding: '1.25rem 2.5rem', textAlign: 'center', fontSize: 12, color: '#aaa', borderTop: '1px solid #e8f5f0' }}>
-        © 2025 FoodLens · Built for NUS Orbital
+        © 2026 FoodLens · Built for NUS Orbital
       </div>
     </div>
   );
