@@ -15,18 +15,23 @@ function App() {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
-      setScreen('dashboard');
-      fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/profile', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-        .then(r => r.json())
-        .then(data => { if (data.preferences) setPreferences(data.preferences); });
-    }
-  }, []);
+  const token = localStorage.getItem('token');
+  const savedUser = localStorage.getItem('user');
+  if (token && savedUser) {
+    setUser(JSON.parse(savedUser));
+    setScreen('dashboard');
+    fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/profile', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(data => { if (data.preferences) setPreferences(data.preferences); });
+  }
+
+  const keepAlive = setInterval(() => {
+    fetch('https://nutriscan-backend-zrv3.onrender.com/');
+  }, 14 * 60 * 1000);
+  return () => clearInterval(keepAlive);
+}, []);
 
   const handleSetUser = (userData) => {
     setUser(userData);
