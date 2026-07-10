@@ -86,7 +86,7 @@ function Search({ setScreen, setProduct }) {
 
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
+      const timeout = setTimeout(() => controller.abort(), 15000);
       const res = await fetch(
         `https://nutriscan-backend-zrv3.onrender.com/api/food/search?query=${encodeURIComponent(query)}`,
         { signal: controller.signal }
@@ -124,7 +124,7 @@ function Search({ setScreen, setProduct }) {
     setError('');
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
+      const timeout = setTimeout(() => controller.abort(), 15000);
       const res = await fetch(
         `https://nutriscan-backend-zrv3.onrender.com/api/food/barcode/${barcode}`,
         { signal: controller.signal }
