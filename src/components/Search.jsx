@@ -68,6 +68,8 @@ const FALLBACK_PRODUCTS = [
   },
 ];
 
+const normalise = str => str.toLowerCase().replace(/[\s\-_.]/g, '');
+
 function Search({ setScreen, setProduct }) {
   const [tab, setTab] = useState('search');
   const [query, setQuery] = useState('');
@@ -76,13 +78,21 @@ function Search({ setScreen, setProduct }) {
   const [error, setError] = useState('');
   const [scanning, setScanning] = useState(false);
 
+  const searchFallback = (q) => {
+    const norm = normalise(q);
+    return FALLBACK_PRODUCTS.filter(p =>
+      normalise(p.product_name).includes(norm) ||
+      normalise(p.brands).includes(norm) ||
+      norm.includes(normalise(p.product_name)) ||
+      norm.includes(normalise(p.brands))
+    );
+  };
+
   const handleSearch = async () => {
     if (!query.trim()) return;
     setLoading(true);
     setError('');
     setResults([]);
-
-    let apiWorking = false;
 
     try {
       const controller = new AbortController();
@@ -92,29 +102,32 @@ function Search({ setScreen, setProduct }) {
         { signal: controller.signal }
       );
       clearTimeout(timeout);
+
+      if (!res.ok) throw new Error('Server error');
+
       const data = await res.json();
-      apiWorking = true;
+
       if (data.products && data.products.length > 0) {
         setResults(data.products);
-        setError('');
       } else {
-        setError('No products found. Try a different search term.');
-      }
-    } catch (err) {
-      if (!apiWorking) {
-        const q = query.toLowerCase().replace(/[\s-]/g, '');
-        const matches = FALLBACK_PRODUCTS.filter(p =>
-          p.product_name.toLowerCase().replace(/[\s-]/g, '').includes(q) ||
-          p.brands.toLowerCase().replace(/[\s-]/g, '').includes(q)
-        );
-        if (matches.length > 0) {
-          setResults(matches);
-          setError('⚠️ Showing offline results — live database temporarily unavailable.');
+        const fallback = searchFallback(query);
+        if (fallback.length > 0) {
+          setResults(fallback);
+          setError('No online results found. Showing similar offline products.');
         } else {
-          setError('Could not connect to server. Try: Milo, Yakult, Maggi, Pocky, Ribena, Kit Kat, 100 Plus, Meiji');
+          setError('No products found. Try a different search term.');
         }
       }
+    } catch (err) {
+      const fallback = searchFallback(query);
+      if (fallback.length > 0) {
+        setResults(fallback);
+        setError('⚠️ Server unavailable. Showing offline results.');
+      } else {
+        setError('Could not connect. Try: Milo, Yakult, Maggi, Pocky, Ribena, Kit Kat, 100 Plus, Meiji');
+      }
     }
+
     setLoading(false);
   };
 
@@ -122,6 +135,7 @@ function Search({ setScreen, setProduct }) {
     setScanning(false);
     setLoading(true);
     setError('');
+
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
@@ -130,6 +144,9 @@ function Search({ setScreen, setProduct }) {
         { signal: controller.signal }
       );
       clearTimeout(timeout);
+
+      if (!res.ok) throw new Error('Server error');
+
       const data = await res.json();
       if (data.status === 1 && data.product) {
         setProduct(data.product);
@@ -147,6 +164,7 @@ function Search({ setScreen, setProduct }) {
         setTab('search');
       }
     }
+
     setLoading(false);
   };
 
@@ -165,8 +183,14 @@ function Search({ setScreen, setProduct }) {
         <p className="subtitle">Search by name or scan a barcode</p>
 
         <div className="tab-row">
-          <button className={`tab-btn ${tab === 'search' ? 'active' : ''}`} onClick={() => { setTab('search'); setScanning(false); setError(''); }}>🔍 Search</button>
-          <button className={`tab-btn ${tab === 'scan' ? 'active' : ''}`} onClick={() => { setTab('scan'); setError(''); }}>📷 Scan</button>
+          <button
+            className={`tab-btn ${tab === 'search' ? 'active' : ''}`}
+            onClick={() => { setTab('search'); setScanning(false); setError(''); setResults([]); }}
+          >🔍 Search</button>
+          <button
+            className={`tab-btn ${tab === 'scan' ? 'active' : ''}`}
+            onClick={() => { setTab('scan'); setError(''); setResults([]); }}
+          >📷 Scan</button>
         </div>
 
         {tab === 'search' && (
@@ -182,7 +206,9 @@ function Search({ setScreen, setProduct }) {
               />
               <button className="search-btn" onClick={handleSearch}>Go</button>
             </div>
-            <p style={{ fontSize: 11, color: '#aaa', marginTop: 4, marginBottom: 8 }}>Tip: use spaces for best results (e.g. "kit kat" not "kitkat")</p>
+            <p style={{ fontSize: 11, color: '#aaa', marginTop: 4, marginBottom: 8 }}>
+              Tip: use spaces for best results (e.g. "kit kat" not "kitkat")
+            </p>
             {loading && <p className="loading">Searching...</p>}
             {error && <p className="error">{error}</p>}
             <div className="results-list">
@@ -212,7 +238,12 @@ function Search({ setScreen, setProduct }) {
                 <div style={{ marginTop: '1rem' }}>
                   <p className="subtitle">Or enter barcode manually:</p>
                   <div className="search-row">
-                    <input type="text" placeholder="e.g. 8888020007773" className="search-input" onKeyDown={e => e.key === 'Enter' && handleBarcodeScan(e.target.value)} />
+                    <input
+                      type="text"
+                      placeholder="e.g. 8888020007773"
+                      className="search-input"
+                      onKeyDown={e => e.key === 'Enter' && handleBarcodeScan(e.target.value)}
+                    />
                     <button className="search-btn" onClick={e => handleBarcodeScan(e.target.previousSibling.value)}>Go</button>
                   </div>
                 </div>
