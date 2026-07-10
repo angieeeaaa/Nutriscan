@@ -81,27 +81,38 @@ function Search({ setScreen, setProduct }) {
     setLoading(true);
     setError('');
     setResults([]);
+
+    let apiWorking = false;
+
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(
-        `https://nutriscan-backend-zrv3.onrender.com/api/food/search?query=${encodeURIComponent(query)}`
+        `https://nutriscan-backend-zrv3.onrender.com/api/food/search?query=${encodeURIComponent(query)}`,
+        { signal: controller.signal }
       );
+      clearTimeout(timeout);
       const data = await res.json();
+      apiWorking = true;
       if (data.products && data.products.length > 0) {
         setResults(data.products);
+        setError('');
       } else {
-        throw new Error('No products');
+        setError('No products found. Try a different search term.');
       }
     } catch (err) {
-      const q = query.toLowerCase();
-      const matches = FALLBACK_PRODUCTS.filter(p =>
-        p.product_name.toLowerCase().includes(q) ||
-        p.brands.toLowerCase().includes(q)
-      );
-      if (matches.length > 0) {
-        setResults(matches);
-        setError('Showing offline results — live database temporarily unavailable.');
-      } else {
-        setError('No products found. Try: Milo, Yakult, Maggi, Pocky, Ribena, Kit Kat, 100 Plus, Meiji');
+      if (!apiWorking) {
+        const q = query.toLowerCase().replace(/[\s-]/g, '');
+        const matches = FALLBACK_PRODUCTS.filter(p =>
+          p.product_name.toLowerCase().replace(/[\s-]/g, '').includes(q) ||
+          p.brands.toLowerCase().replace(/[\s-]/g, '').includes(q)
+        );
+        if (matches.length > 0) {
+          setResults(matches);
+          setError('⚠️ Showing offline results — live database temporarily unavailable.');
+        } else {
+          setError('Could not connect to server. Try: Milo, Yakult, Maggi, Pocky, Ribena, Kit Kat, 100 Plus, Meiji');
+        }
       }
     }
     setLoading(false);
@@ -112,9 +123,13 @@ function Search({ setScreen, setProduct }) {
     setLoading(true);
     setError('');
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(
-        `https://nutriscan-backend-zrv3.onrender.com/api/food/barcode/${barcode}`
+        `https://nutriscan-backend-zrv3.onrender.com/api/food/barcode/${barcode}`,
+        { signal: controller.signal }
       );
+      clearTimeout(timeout);
       const data = await res.json();
       if (data.status === 1 && data.product) {
         setProduct(data.product);
@@ -150,8 +165,8 @@ function Search({ setScreen, setProduct }) {
         <p className="subtitle">Search by name or scan a barcode</p>
 
         <div className="tab-row">
-          <button className={`tab-btn ${tab === 'search' ? 'active' : ''}`} onClick={() => { setTab('search'); setScanning(false); }}>🔍 Search</button>
-          <button className={`tab-btn ${tab === 'scan' ? 'active' : ''}`} onClick={() => setTab('scan')}>📷 Scan</button>
+          <button className={`tab-btn ${tab === 'search' ? 'active' : ''}`} onClick={() => { setTab('search'); setScanning(false); setError(''); }}>🔍 Search</button>
+          <button className={`tab-btn ${tab === 'scan' ? 'active' : ''}`} onClick={() => { setTab('scan'); setError(''); }}>📷 Scan</button>
         </div>
 
         {tab === 'search' && (
@@ -161,12 +176,13 @@ function Search({ setScreen, setProduct }) {
                 type="text"
                 placeholder="e.g. Milo, Yakult, Kit Kat..."
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                onChange={e => { setQuery(e.target.value); setError(''); }}
                 onKeyDown={e => e.key === 'Enter' && handleSearch()}
                 className="search-input"
               />
               <button className="search-btn" onClick={handleSearch}>Go</button>
             </div>
+            <p style={{ fontSize: 11, color: '#aaa', marginTop: 4, marginBottom: 8 }}>Tip: use spaces for best results (e.g. "kit kat" not "kitkat")</p>
             {loading && <p className="loading">Searching...</p>}
             {error && <p className="error">{error}</p>}
             <div className="results-list">
