@@ -44,6 +44,9 @@ function Dashboard({ user, preferences, setScreen }) {
           )}
         </div>
 
+        <button className="btn-secondary" onClick={() => setScreen('history')} style={{ marginBottom: '0.5rem' }}>
+          📋 View Scan History
+        </button>
         <button className="btn-secondary" onClick={() => setScreen('profile')}>
           ✏️ Edit Profile
         </button>

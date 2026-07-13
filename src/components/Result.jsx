@@ -115,6 +115,31 @@ function Result({ product, preferences, setScreen }) {
     fetchAlternatives();
   }, [product, verdict]);
 
+  useEffect(() => {
+    if (!product) return;
+    const saveHistory = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/history', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            product_name: name,
+            brand: brand,
+            verdict: verdict,
+            product_data: product
+          })
+        });
+      } catch (err) {
+        console.log('Could not save to history');
+      }
+    };
+    saveHistory();
+  }, [product]);
+
   if (!product) return null;
 
   return (
