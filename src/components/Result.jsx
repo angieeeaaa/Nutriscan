@@ -138,7 +138,7 @@ function Result({ product, preferences, setScreen }) {
       }
     };
     saveHistory();
-  }, [product]);
+  }, [product, name, brand, verdict]);
 
   if (!product) return null;
 
