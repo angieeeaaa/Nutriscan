@@ -3,49 +3,10 @@ import React, { useState, useEffect } from 'react';
 function Result({ product, preferences, setScreen }) {
   const [alternatives, setAlternatives] = useState([]);
   const [loadingAlts, setLoadingAlts] = useState(false);
+  const [isFavourited, setIsFavourited] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
 
-  useEffect(() => {
-  const checkFavourite = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/favourites', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      const already = (data.favourites || []).some(f => f.product_name === name);
-      setIsFavourited(already);
-    } catch (err) {
-      console.log('Could not check favourites');
-    }
-  };
-  if (product) checkFavourite();
-}, [product, name]);
-
-const toggleFavourite = async () => {
-  setFavLoading(true);
-  const token = localStorage.getItem('token');
-  try {
-    if (isFavourited) {
-      await fetch(`https://nutriscan-backend-zrv3.onrender.com/api/user/favourites/${encodeURIComponent(name)}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      setIsFavourited(false);
-    } else {
-      await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/favourites', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ product_name: name, brand, verdict, product_data: product })
-      });
-      setIsFavourited(true);
-    }
-  } catch (err) {
-    console.log('Could not update favourites');
-  }
-  setFavLoading(false);
-};
-  
-const nutrients = product?.nutriments || {};
+  const nutrients = product?.nutriments || {};
   const ingredients = product?.ingredients_text || 'No ingredient information available.';
   const name = product?.product_name || 'Unknown product';
   const brand = product?.brands || '';
@@ -126,21 +87,58 @@ const nutrients = product?.nutriments || {};
   const vc = verdictConfig[verdict];
 
   useEffect(() => {
+    const checkFavourite = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/favourites', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const already = (data.favourites || []).some(f => f.product_name === name);
+        setIsFavourited(already);
+      } catch (err) {
+        console.log('Could not check favourites');
+      }
+    };
+    if (product) checkFavourite();
+  }, [product, name]);
+
+  const toggleFavourite = async () => {
+    setFavLoading(true);
+    const token = localStorage.getItem('token');
+    try {
+      if (isFavourited) {
+        await fetch(`https://nutriscan-backend-zrv3.onrender.com/api/user/favourites/${encodeURIComponent(name)}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        setIsFavourited(false);
+      } else {
+        await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/favourites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ product_name: name, brand, verdict, product_data: product })
+        });
+        setIsFavourited(true);
+      }
+    } catch (err) {
+      console.log('Could not update favourites');
+    }
+    setFavLoading(false);
+  };
+
+  useEffect(() => {
     if (!product || verdict === 'suitable') {
       setAlternatives([]);
       return;
     }
-
     const fetchAlternatives = async () => {
       setLoadingAlts(true);
       try {
         const token = localStorage.getItem('token');
         const res = await fetch('https://nutriscan-backend-zrv3.onrender.com/api/alternatives', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ product })
         });
         const data = await res.json();
@@ -152,7 +150,6 @@ const nutrients = product?.nutriments || {};
         setLoadingAlts(false);
       }
     };
-
     fetchAlternatives();
   }, [product, verdict]);
 
@@ -163,16 +160,8 @@ const nutrients = product?.nutriments || {};
         const token = localStorage.getItem('token');
         await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/history', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            product_name: name,
-            brand: brand,
-            verdict: verdict,
-            product_data: product
-          })
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ product_name: name, brand, verdict, product_data: product })
         });
       } catch (err) {
         console.log('Could not save to history');
@@ -192,6 +181,7 @@ const nutrients = product?.nutriments || {};
         {image && <img src={image} alt={name} className="product-img" />}
         <h2>{name}</h2>
         {brand && <p className="result-brand" style={{ marginBottom: '1rem' }}>{brand}</p>}
+
         <button
           onClick={toggleFavourite}
           disabled={favLoading}
@@ -236,9 +226,7 @@ const nutrients = product?.nutriments || {};
             {!loadingAlts && alternatives.length > 0 && (
               <ul className="alt-list">
                 {alternatives.map(alt => (
-                  <li key={alt.code} className="alt-item">
-                    {alt.name}
-                  </li>
+                  <li key={alt.code} className="alt-item">{alt.name}</li>
                 ))}
               </ul>
             )}
