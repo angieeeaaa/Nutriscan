@@ -15,7 +15,7 @@ function Design({ setScreen, user, preferences }) {
     <div style={{ width: '100vw', overflowX: 'hidden' }}>
 
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2.5rem', background: '#fff', borderBottom: '1px solid #e8f5f0' }}>
-        <span style={{ fontSize: 20, fontWeight: 800, color: '#0F6E56' }}>🥦 FoodLens</span>
+        <span style={{ fontSize: 20, fontWeight: 800, color: '#0F6E56' }}>🥦 NutriLens</span>
         <div style={{ display: 'flex', gap: 10 }}>
           <button className="btn btn-outline-success btn-sm" onClick={() => setScreen('login')}>Log in</button>
           <button className="btn btn-success btn-sm" onClick={() => setScreen('signup')}>Get started</button>

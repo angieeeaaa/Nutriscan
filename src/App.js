@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard';
 import Search from './components/Search';
 import Result from './components/Result';
 import History from './components/History';
+import HealthProfile from './components/HealthProfile';
 
 function App() {
   const [screen, setScreen] = useState('landing');
@@ -49,6 +50,7 @@ function App() {
       {screen === 'search' && <Search setScreen={setScreen} setProduct={setProduct} />}
       {screen === 'result' && <Result product={product} preferences={preferences} setScreen={setScreen} />}
       {screen === 'history' && <History setScreen={setScreen} setProduct={setProduct} />}
+      {screen === 'healthprofile' && <HealthProfile setScreen={setScreen} preferences={preferences} setProduct={setProduct} />}
     </div>
   );
 }

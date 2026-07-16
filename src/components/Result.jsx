@@ -4,7 +4,48 @@ function Result({ product, preferences, setScreen }) {
   const [alternatives, setAlternatives] = useState([]);
   const [loadingAlts, setLoadingAlts] = useState(false);
 
-  const nutrients = product?.nutriments || {};
+  useEffect(() => {
+  const checkFavourite = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/favourites', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      const already = (data.favourites || []).some(f => f.product_name === name);
+      setIsFavourited(already);
+    } catch (err) {
+      console.log('Could not check favourites');
+    }
+  };
+  if (product) checkFavourite();
+}, [product, name]);
+
+const toggleFavourite = async () => {
+  setFavLoading(true);
+  const token = localStorage.getItem('token');
+  try {
+    if (isFavourited) {
+      await fetch(`https://nutriscan-backend-zrv3.onrender.com/api/user/favourites/${encodeURIComponent(name)}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setIsFavourited(false);
+    } else {
+      await fetch('https://nutriscan-backend-zrv3.onrender.com/api/user/favourites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ product_name: name, brand, verdict, product_data: product })
+      });
+      setIsFavourited(true);
+    }
+  } catch (err) {
+    console.log('Could not update favourites');
+  }
+  setFavLoading(false);
+};
+  
+const nutrients = product?.nutriments || {};
   const ingredients = product?.ingredients_text || 'No ingredient information available.';
   const name = product?.product_name || 'Unknown product';
   const brand = product?.brands || '';
@@ -151,6 +192,26 @@ function Result({ product, preferences, setScreen }) {
         {image && <img src={image} alt={name} className="product-img" />}
         <h2>{name}</h2>
         {brand && <p className="result-brand" style={{ marginBottom: '1rem' }}>{brand}</p>}
+        <button
+          onClick={toggleFavourite}
+          disabled={favLoading}
+          style={{
+            background: isFavourited ? '#E1F5EE' : '#f8f8f8',
+            border: `1.5px solid ${isFavourited ? '#1D9E75' : '#e0e0e0'}`,
+            borderRadius: 10,
+            padding: '8px 16px',
+            fontSize: 13,
+            fontWeight: 600,
+            color: isFavourited ? '#0F6E56' : '#888',
+            cursor: 'pointer',
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6
+          }}
+        >
+          {isFavourited ? '❤️ Saved to favourites' : '🤍 Save to favourites'}
+        </button>
 
         <div className="verdict-box" style={{ background: vc.bg, borderColor: vc.color }}>
           <p className="verdict-label" style={{ color: vc.color }}>{vc.label}</p>
