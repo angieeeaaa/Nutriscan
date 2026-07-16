@@ -77,9 +77,9 @@ function Design({ setScreen, user, preferences }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
           {[
             { icon: '📷', title: 'Barcode scanning', desc: 'Point your camera at any packaged food barcode for instant product lookup.', target: 'search', active: true },
-            { icon: '🎯', title: 'Personalised analysis', desc: 'Get a suitability verdict based on your specific health conditions and allergies.', target: null, active: false },
-            { icon: '📊', title: 'Nutrition breakdown', desc: 'See detailed nutrition facts and full ingredient lists for every product.', target: null, active: false },
+            { icon: '📋', title: 'Scan History', desc: 'View all your previously scanned products and their suitability verdicts.', target: 'history', active: true },
             { icon: '🔍', title: 'Product search', desc: "Search millions of products by name when scanning isn't available.", target: 'search', active: true },
+            { icon: '👤', title: 'My Health Profile', desc: 'View your health conditions and manage your saved favourite products.', target: 'healthprofile', active: true },
           ].map((f, i) => (
             <div key={i}
               onClick={() => f.active && handleFeatureClick(f.target)}
