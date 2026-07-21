@@ -74,7 +74,7 @@ function Design({ setScreen, user, preferences }) {
       <div style={{ padding: '4rem 2.5rem', background: '#f8fdfb' }}>
         <h2 style={{ textAlign: 'center', fontSize: 26, fontWeight: 800, color: '#1a1a1a', marginBottom: 6 }}>Explore our features just for you</h2>
         <p style={{ textAlign: 'center', color: '#888', fontSize: 14, marginBottom: '2rem' }}>Click on a feature to get started — login required</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16 }}>
           {[
             { icon: '📷', title: 'Barcode scanning', desc: 'Point your camera at any packaged food barcode for instant product lookup.', target: 'search', active: true },
             { icon: '📋', title: 'Scan History', desc: 'View all your previously scanned products and their suitability verdicts.', target: 'history', active: true },
