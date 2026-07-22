@@ -89,47 +89,48 @@ function Search({ setScreen, setProduct }) {
   };
 
   const handleSearch = async () => {
-    if (!query.trim()) return;
-    setLoading(true);
-    setError('');
-    setResults([]);
+  if (!query.trim()) return;
+  setLoading(true);
+  setError('');
+  setResults([]);
 
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
-      const res = await fetch(
-        `https://nutriscan-backend-zrv3.onrender.com/api/food/search?query=${encodeURIComponent(query)}`,
-        { signal: controller.signal }
-      );
-      clearTimeout(timeout);
-
-      if (!res.ok) throw new Error('Server error');
-
-      const data = await res.json();
-
-      if (data.products && data.products.length > 0) {
-        setResults(data.products);
-      } else {
-        const fallback = searchFallback(query);
-        if (fallback.length > 0) {
-          setResults(fallback);
-          setError('No online results found. Showing similar offline products.');
-        } else {
-          setError('No products found. Try a different search term.');
-        }
-      }
-    } catch (err) {
-      const fallback = searchFallback(query);
-      if (fallback.length > 0) {
-        setResults(fallback);
-        setError('⚠️ Server unavailable. Showing offline results.');
-      } else {
-        setError('Could not connect. Try: Milo, Yakult, Maggi, Pocky, Ribena, Kit Kat, 100 Plus, Meiji');
-      }
-    }
-
-    setLoading(false);
+  const tryFetch = async () => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
+    const res = await fetch(
+      `https://nutriscan-backend-zrv3.onrender.com/api/food/search?query=${encodeURIComponent(query)}`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error('Server error');
+    const data = await res.json();
+    if (data.products && data.products.length > 0) return data.products;
+    return null;
   };
+
+  let products = null;
+  for (let i = 0; i < 3; i++) {
+    try {
+      products = await tryFetch();
+      if (products) break;
+    } catch (err) {
+      if (i < 2) await new Promise(r => setTimeout(r, 1500));
+    }
+  }
+
+  if (products) {
+    setResults(products);
+  } else {
+    const fallback = searchFallback(query);
+    if (fallback.length > 0) {
+      setResults(fallback);
+      setError('⚠️ Server unavailable. Showing offline results.');
+    } else {
+      setError('Could not connect. Try: Milo, Yakult, Maggi, Pocky, Ribena, Kit Kat, 100 Plus, Meiji');
+    }
+  }
+  setLoading(false);
+};
 
   const handleBarcodeScan = async (barcode) => {
     setScanning(false);
