@@ -43,7 +43,13 @@ function Dashboard({ user, preferences, setScreen }) {
             <p className="no-prefs">No conditions selected.</p>
           )}
         </div>
-
+ 
+        <button className="btn-secondary" onClick={() => setScreen('healthprofile')} style={{ marginBottom: '0.5rem' }}>
+          👤 My Health Profile
+        </button>
+        <button className="btn-secondary" onClick={() => setScreen('history')} style={{ marginBottom: '0.5rem' }}>
+          📋 View Scan History
+        </button>
         <button className="btn-secondary" onClick={() => setScreen('profile')}>
           ✏️ Edit Profile
         </button>

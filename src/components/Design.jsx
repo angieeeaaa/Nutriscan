@@ -15,7 +15,7 @@ function Design({ setScreen, user, preferences }) {
     <div style={{ width: '100vw', overflowX: 'hidden' }}>
 
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2.5rem', background: '#fff', borderBottom: '1px solid #e8f5f0' }}>
-        <span style={{ fontSize: 20, fontWeight: 800, color: '#0F6E56' }}>🥦 FoodLens</span>
+        <span style={{ fontSize: 20, fontWeight: 800, color: '#0F6E56' }}>🥦 NutriLens</span>
         <div style={{ display: 'flex', gap: 10 }}>
           <button className="btn btn-outline-success btn-sm" onClick={() => setScreen('login')}>Log in</button>
           <button className="btn btn-success btn-sm" onClick={() => setScreen('signup')}>Get started</button>
@@ -74,12 +74,12 @@ function Design({ setScreen, user, preferences }) {
       <div style={{ padding: '4rem 2.5rem', background: '#f8fdfb' }}>
         <h2 style={{ textAlign: 'center', fontSize: 26, fontWeight: 800, color: '#1a1a1a', marginBottom: 6 }}>Explore our features just for you</h2>
         <p style={{ textAlign: 'center', color: '#888', fontSize: 14, marginBottom: '2rem' }}>Click on a feature to get started — login required</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16 }}>
           {[
             { icon: '📷', title: 'Barcode scanning', desc: 'Point your camera at any packaged food barcode for instant product lookup.', target: 'search', active: true },
-            { icon: '🎯', title: 'Personalised analysis', desc: 'Get a suitability verdict based on your specific health conditions and allergies.', target: null, active: false },
-            { icon: '📊', title: 'Nutrition breakdown', desc: 'See detailed nutrition facts and full ingredient lists for every product.', target: null, active: false },
+            { icon: '📋', title: 'Scan History', desc: 'View all your previously scanned products and their suitability verdicts.', target: 'history', active: true },
             { icon: '🔍', title: 'Product search', desc: "Search millions of products by name when scanning isn't available.", target: 'search', active: true },
+            { icon: '👤', title: 'My Health Profile', desc: 'View your health conditions and manage your saved favourite products.', target: 'healthprofile', active: true },
           ].map((f, i) => (
             <div key={i}
               onClick={() => f.active && handleFeatureClick(f.target)}
@@ -115,7 +115,7 @@ function Design({ setScreen, user, preferences }) {
       </div>
 
       <div style={{ padding: '1.25rem 2.5rem', textAlign: 'center', fontSize: 12, color: '#aaa', borderTop: '1px solid #e8f5f0' }}>
-        © 2025 FoodLens · Built for NUS Orbital
+        © 2026 FoodLens · Built for NUS Orbital
       </div>
     </div>
   );

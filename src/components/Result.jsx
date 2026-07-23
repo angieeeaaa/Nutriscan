@@ -295,7 +295,7 @@ function Result({ product, preferences, setScreen }) {
               { label: 'Sodium', val: nutrients['sodium_100g'], unit: 'g' },
             ].map(n => (
               <div key={n.label} className="nutrition-item">
-                <p className="nutrition-val">{n.val != null ? `${n.val}${n.unit}` : 'N/A'}</p>
+                <p className="nutrition-val">{n.val != null ? `${parseFloat(n.val).toFixed(1)}${n.unit}` : 'N/A'}</p>
                 <p className="nutrition-label">{n.label}</p>
               </div>
             ))}
