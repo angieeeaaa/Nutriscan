@@ -112,7 +112,7 @@ function Result({ product, preferences, setScreen }) {
     },
     dairy: {
       label: 'Dairy',
-      check: () => /milk|cheese|butter|cream|yogurt|whey|casein|lactose/i.test(ingredients),
+      check: () => /\b(milk|cheese|butter|cream|yogurt|whey|casein|lactose)\b/i.test(ingredients) && !/butternut/i.test(ingredients),
       reason: 'May contain dairy ingredients'
     },
     eggs: {
