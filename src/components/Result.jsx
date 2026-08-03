@@ -112,7 +112,13 @@ function Result({ product, preferences, setScreen }) {
     },
     dairy: {
       label: 'Dairy',
-      check: () => /\b(milk|cheese|butter|cream|yogurt|whey|casein|lactose)\b/i.test(ingredients) && !/butternut/i.test(ingredients),
+      check: () => {
+        const hasPeanutButter = /peanut\s+butter/i.test(ingredients);
+        const strippedIngredients = hasPeanutButter
+          ? ingredients.replace(/peanut\s+butter/gi, '')
+          : ingredients;
+        return /\b(milk|cheese|butter|cream|yogurt|whey|casein|lactose)\b/i.test(strippedIngredients) && !/butternut/i.test(strippedIngredients);
+      },
       reason: 'May contain dairy ingredients'
     },
     eggs: {
