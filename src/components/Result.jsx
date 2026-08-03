@@ -99,10 +99,10 @@ function Result({ product, preferences, setScreen }) {
       label: 'Gluten-free',
       check: () => /wheat|barley|rye|gluten|flour/i.test(ingredients),
       reason: 'May contain gluten-containing ingredients'
-    },
+    }, 
     nuts: {
       label: 'Tree Nuts',
-      check: () => /almond|cashew|walnut|pecan|pistachio|hazelnut|macadamia|nut/i.test(ingredients),
+      check: () => /\b(almond|cashew|walnut|pecan|pistachio|hazelnut|macadamia|brazil nut|tree nut)s?\b/i.test(ingredients),
       reason: 'May contain tree nuts'
     },
     shellfish: {
