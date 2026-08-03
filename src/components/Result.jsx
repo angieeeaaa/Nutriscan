@@ -97,7 +97,7 @@ function Result({ product, preferences, setScreen }) {
     },
     gluten_free: {
       label: 'Gluten-free',
-      check: () => /wheat|barley|rye|gluten|flour/i.test(ingredients),
+      check: () => /wheat|barley|rye|gluten|(wheat|barley|rye)\s+flour/i.test(ingredients),
       reason: 'May contain gluten-containing ingredients'
     }, 
     nuts: {
