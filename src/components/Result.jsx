@@ -62,7 +62,7 @@ function Result({ product, preferences, setScreen }) {
   const rules = {
     diabetes: {
       label: 'Diabetes',
-      check: () => nutrients['sugars_100g'] > 10 || nutrients['carbohydrates_100g'] > 30,
+      check: () => nutrients['sugars_100g'] > 5 || nutrients['carbohydrates_100g'] > 30,
       reason: `High sugar (${nutrients['sugars_100g'] || 0}g) or carbs (${nutrients['carbohydrates_100g'] || 0}g) per 100g`
     },
     hypertension: { 
