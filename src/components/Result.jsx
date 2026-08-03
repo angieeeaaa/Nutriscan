@@ -117,7 +117,7 @@ function Result({ product, preferences, setScreen }) {
     },
     eggs: {
       label: 'Eggs',
-      check: () => /egg|eggs|albumin/i.test(ingredients),
+      check: () => /\b(egg|eggs|albumin)\b/i.test(ingredients),
       reason: 'May contain eggs'
     },
   };
